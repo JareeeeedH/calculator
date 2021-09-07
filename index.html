@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>計算機</title>
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- CSS from SCSS -->
+    <link rel="stylesheet" href="./styles/style.css">
+    <!-- fontAwesome -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css'/>
+
+  </head>
+
+<body>
+    <div id='app'>
+          
+      <div class="calculator">
+
+       <div class="top-section">
+
+        <div class="monitor">
+          <span v-for='item in calcuting'> {{item}} </span>
+          <h3> {{eachPosition}} </h3>
+          <h1 class='result'> = {{  result }}</h1>
+        </div>
+        <div class="setbackkey" @click='deletHandler'>
+          <i class="fas fa-arrow-left"></i>
+        </div>
+
+      </div>
+
+      <div class="keys-container">
+
+       <div class="number-container">
+        <span class="key op-keys" :key='index' v-for='(key, index) in numberkeys' :key='index' @click='clickHandler'>
+          {{key}}
+        </span>
+       </div>
+
+        <div class="op-container">
+          <span class="key op-keys" :key='index' v-for='(key, index) in operators' :key='index' @click='clickHandler'>
+            {{key}}
+          </span>
+        </div>
+
+      </div>
+
+      </div>
+
+      <div class="roman">
+        {{ roman }}
+      </div>
+
+    </div>
+
+
+<script type="module">
+
+  // functions for postFix
+  import {
+            createdBrackets, 
+            getOperatorBack, 
+            bracketingUp, 
+            toPostFix, 
+            eachCalculate,
+            calcuteByPostFix } from './postFix-algorithm.js';
+
+  // function for Roman
+  import { Int_ToRoman } from './int_to_roman.js';
+
+
+  var app = new Vue({
+        el: '#app',
+        data: {
+          numberkeys:[0,1,2,3,4,5,6,7,8,9,'.'],
+          operators: ['+','-','*','/','AC','='],
+
+          calcuting:[],
+          eachPosition:'',
+          calcutingWithBrackets:[],
+          postfix: [],
+          result: 0,
+
+
+          roman:'',
+
+        },
+
+        watch:{
+          eachPosition: function(value){
+          
+            window.localStorage.setItem('inputing',value)
+
+          },
+        },
+
+        methods:{
+          clickHandler(e){
+            let clickKey = e.target.innerText;
+
+            //0
+            if(clickKey == '0'){
+
+              if(this.eachPosition == false){
+                return
+              }
+              
+              this.eachPosition+= clickKey;
+            }
+            // .
+            else if(clickKey == '.'){
+              this.eachPosition+=clickKey;
+            }
+            //數字
+            else if(Number(clickKey)){
+            this.eachPosition+=clickKey;
+            }
+
+            // 等於
+            else if(clickKey == '='){
+              this.calcuting.push((this.eachPosition));
+              this.eachPosition='';
+              this.getResult();
+
+              //寫入過程與答案;
+              this.LocalSaveCalculate();
+              this.LocalSaveAnswer();
+
+            }else if(clickKey == 'AC'){
+              this.calcuting=[];
+              this.eachPosition='';
+              this.result= 0;
+
+              this.LocalSaveCalculate();
+              this.LocalSaveAnswer();
+
+            }
+
+            // 輸入負數
+            else if(clickKey == '-' && !this.eachPosition){
+               this.eachPosition+=clickKey;
+            }
+
+            // 重複計算修改..
+            // else if(clickKey == '+'||'-'||'*'||'/')
+
+            // 加減乘除
+              else{
+                this.calcuting.push((this.eachPosition));
+                this.calcuting.push(clickKey);
+                this.eachPosition='';
+                this.LocalSaveCalculate();
+              }
+          },
+
+          deletHandler(){
+            let deleteOne = this.eachPosition.substring(0, this.eachPosition.length-1);
+            this.eachPosition = deleteOne;
+          },
+
+          getResult(){
+            let temp = [...this.calcuting];
+            this.calcutingWithBrackets = temp;
+
+            bracketingUp(this.calcutingWithBrackets);
+            this.postfix = toPostFix(this.calcutingWithBrackets);
+            let myAnswer =calcuteByPostFix(this.postfix)[0];
+
+            if(myAnswer%1 == 0){
+              this.result = calcuteByPostFix(this.postfix)[0];
+            }else{
+              this.result = calcuteByPostFix(this.postfix)[0].toFixed(2);
+            };
+            
+            this.getRoman();
+
+          },
+
+          getRoman(){
+
+            let data = this.result;
+
+            if(data < 0){
+              return '';
+            }
+            else{
+
+              this.roman = Int_ToRoman(Math.floor(data))
+
+            }
+
+
+          },
+
+          // save to localstorage
+          LocalSaveCalculate(){
+            let valueToSave = JSON.stringify(this.calcuting);
+            window.localStorage.setItem('calculateOrder', valueToSave);
+          },
+          LocalSaveAnswer(){
+            // let valueToSave = JSON.stringify(this.result);
+            window.localStorage.setItem('answer', this.result);
+          },
+
+        },
+
+        created(){
+          
+          // getItem and set to Data;
+          let inputing = window.localStorage.getItem('inputing');
+          let calcutingRecord = window.localStorage.getItem('calculateOrder');
+          let answer = window.localStorage.getItem('answer');
+
+
+          this.eachPosition = inputing;
+          this.calcuting = JSON.parse(calcutingRecord);
+          this.result = Number(answer);
+
+
+          this.getRoman();
+
+
+        }
+  })
+  
+
+</script>
+
+</body>
+
+
+
+</html>
