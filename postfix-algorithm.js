@@ -1,33 +1,34 @@
 // 寫入括號
-// input array, and index of (* || /)
+// 給array與 乘號or除號位置，完成乘除先括號。 1+(2*3)
 let createdBrackets = function(array, index){
     array.splice(index+2, 0, ")");    
     array.splice(index-1, 0, "(");
-
     return array
     };
  
-// 遞迴括號起來
+// 給array，將array跑迴圈，尋找每個位置，遇到 "＊"或者“/"，就調用寫入括號的function；
+// 因為給了括號，array的length，會變多，最後面的幾個位置會沒有跑到迴圈；
+// 將尋找到的 * / 號替換掉，避免重跑迴圈又遇到，然後再調用一次自己這個function跑迴圈，直到都括號完畢。
 let bracketingUp = function(array){
 
     let needToBracket= false;
-    let indexOf_mul_div = null;
+    let indexOfOperator = null;
     array.forEach( (item, index, array) =>{
 
             if( item == '*'){ 
             
-            indexOf_mul_div = index;
+            indexOfOperator = index;
             array[index] = 'x';
-            createdBrackets(array, indexOf_mul_div);
+            createdBrackets(array, indexOfOperator);
 
             needToBracket = true;
 
             }
             else if( item == '/'){ 
             
-            indexOf_mul_div = index;
+            indexOfOperator = index;
             array[index] = '÷';
-            createdBrackets(array, indexOf_mul_div);
+            createdBrackets(array, indexOfOperator);
 
             needToBracket = true;
 
@@ -45,7 +46,7 @@ let bracketingUp = function(array){
     }
 };
 
-// 把 x || ÷ 換回 * || /
+// 把 x ÷ 換回 * /
 let getOperatorBack = function(array){
     array.forEach(( item, index, array )=>{
 
@@ -57,16 +58,18 @@ let getOperatorBack = function(array){
 };
 
 // 中序轉後序演算法
+// 參數放入括號完成的array，執行中序轉後序演算法。
 function toPostFix(arrayWithBrackets){
 
+    // 輸出的結果
     let output = [];
+    // 存放運算符的堆疊資料
     let opList = [];
 
+    // 權重分數比較
     let scores= {
         'x': 10,
         '÷': 10,
-        '(':5,
-        ')':5,
         "+":2,
         "-": 2
     }
@@ -80,7 +83,7 @@ function toPostFix(arrayWithBrackets){
         }
 
         // '(' 左括號直接進去 opList堆疊
-        else if( item == '('){ 
+        else if( item == '(' ){ 
             console.log('左括號 進去Stake', item)
             opList.push( item ); 
         }
@@ -157,10 +160,8 @@ function toPostFix(arrayWithBrackets){
 
     })
 
-
-    // loop跑完，處理堆疊Stake剩下的，依序進入postFix
-
-    while( opList.length>0){
+    // loop跑完，處理堆疊剩下的內容，依序進入output
+    while( opList.length>0 ){
 
         let opperatorOutStake = opList.pop();
 
@@ -168,18 +169,16 @@ function toPostFix(arrayWithBrackets){
             output.push(opperatorOutStake);
             console.log(output)
         }
-        
     }
-
 
     // console.log('output',output)
     console.log('Stake',opList)
     return output;
-}
-
+};
 
 
 // calcute for each operator
+// 給入兩個數字+一個運算符號，做計算。
 let eachCalculate = function(number1, number2, operator){
 
     if(operator == '+'){
@@ -198,8 +197,8 @@ let eachCalculate = function(number1, number2, operator){
     else{ alert('operator is wrong')}
 };
 
-
 // calcute by PostFix
+// 參數放入後序排列的array，依後序計算的演算法計算。
 let calcuteByPostFix = function(postfixArray){
     let stack = [];
     postfixArray.forEach((item =>{
@@ -218,8 +217,6 @@ let calcuteByPostFix = function(postfixArray){
     return(stack)
 
 };
-
-
 
 
 export {createdBrackets, getOperatorBack, bracketingUp, toPostFix, eachCalculate, calcuteByPostFix}

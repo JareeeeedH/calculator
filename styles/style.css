@@ -121,7 +121,8 @@ body {
 }
 
 .roman {
-  width: 100%;
+  width: 420px;
+  overflow: auto;
   padding: 1rem 0.25rem;
   font-size: 20px;
 }

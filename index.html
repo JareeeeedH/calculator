@@ -59,7 +59,15 @@
 
 <script type="module">
 
-  // functions for postFix
+//做括號
+  // createdBrackets,
+  // getOperatorBack, 
+  // bracketingUp
+
+// 做排後序與計算
+  // toPostFix, 
+  // eachCalculate,
+  // calcuteByPostFix
   import {
             createdBrackets, 
             getOperatorBack, 
@@ -83,10 +91,7 @@
           calcutingWithBrackets:[],
           postfix: [],
           result: 0,
-
-
           roman:'',
-
         },
 
         watch:{
@@ -214,14 +219,11 @@
           let calcutingRecord = window.localStorage.getItem('calculateOrder');
           let answer = window.localStorage.getItem('answer');
 
-
           this.eachPosition = inputing;
           this.calcuting = JSON.parse(calcutingRecord);
           this.result = Number(answer);
 
-
           this.getRoman();
-
 
         }
   })
