@@ -19,7 +19,7 @@ html, body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background-color: #416348;
+  background-image: radial-gradient(50% 30% ellipse at center top, #201e40 0%, rgba(0, 0, 0, 0) 100%), radial-gradient(60% 50% ellipse at center bottom, #261226 0%, #100a1c 100%);
 }
 
 body {
@@ -32,12 +32,12 @@ body {
 }
 
 .calculator {
-  width: 420px;
-  height: 400px;
-  background-color: #cecece;
+  width: 350px;
+  height: 500px;
+  background-image: radial-gradient(50% 30% ellipse at center top, #201e40 0%, rgba(0, 0, 0, 0) 100%), radial-gradient(60% 50% ellipse at center bottom, #261226 0%, #100a1c 100%);
   -webkit-box-shadow: 0 0 2px 2px #5a5a5a;
           box-shadow: 0 0 2px 2px #5a5a5a;
-  border-radius: 15px;
+  border-radius: 6px;
   padding: 1.5rem;
 }
 
@@ -54,8 +54,8 @@ body {
   font-size: 25px;
   text-align: center;
   cursor: pointer;
-  background-color: #6c8b49;
-  color: white;
+  background: rgba(42, 50, 113, 0.28);
+  color: #6cacc5;
   margin: 6px;
 }
 
@@ -109,7 +109,8 @@ body {
 }
 
 .op-container .key {
-  background-color: #998761;
+  background: rgba(42, 50, 113, 0.28);
+  color: #6cacc5;
 }
 
 .number-container span.key:hover {
@@ -125,5 +126,6 @@ body {
   overflow: auto;
   padding: 1rem 0.25rem;
   font-size: 20px;
+  color: white;
 }
 /*# sourceMappingURL=style.css.map */
